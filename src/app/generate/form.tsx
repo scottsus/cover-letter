@@ -41,7 +41,7 @@ export function Form({
       formData.append("file", file);
     }
     formData.append("linkedInUrl", linkedInUrl);
-    formData.append("jobPostingUrl:", jobPostingUrl);
+    formData.append("jobPostingUrl", jobPostingUrl);
 
     try {
       setIsPending(true);
