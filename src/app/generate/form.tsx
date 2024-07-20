@@ -2,6 +2,7 @@
 
 import { readStreamableValue } from "ai/rsc";
 import { useState } from "react";
+import { ClipLoader } from "react-spinners";
 import { toast } from "sonner";
 
 import { Button } from "~/components/ui/button";
@@ -19,6 +20,7 @@ export function Form({
   const [linkedInUrl, setLinkedInUrl] = useState("");
   const [jobPostingUrl, setJobPostingUrl] = useState("");
   const [isPending, setIsPending] = useState(false);
+  const [hasGeneratedCoverLetter, setHasGeneratedCoverLetter] = useState(false);
 
   const handleInputFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputFile = e.target.files?.[0];
@@ -43,6 +45,7 @@ export function Form({
 
     try {
       setIsPending(true);
+      setHasGeneratedCoverLetter(true);
       const res = await handleCoverLetter(formData);
       if (!res) {
         toast.error(`Unknown error. Please try again.`);
@@ -94,7 +97,16 @@ export function Form({
       <div>
         <div className="flex justify-end">
           <Button onClick={handleSubmit} type="submit" disabled={isPending}>
-            {isPending ? "Generating..." : "Generate Cover Letter 🚀"}
+            {isPending ? (
+              <>
+                <ClipLoader size={16} color="white" className="mr-2" />
+                Generating...
+              </>
+            ) : !hasGeneratedCoverLetter ? (
+              "Generate Cover Letter 🚀"
+            ) : (
+              "Regenerate Cover Letter ✨"
+            )}
           </Button>
         </div>
       </div>
