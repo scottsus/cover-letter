@@ -1,17 +1,19 @@
 "use client";
 
-import { toast } from "sonner";
-import { Label } from "~/components/ui/label";
-import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
+import { readStreamableValue } from "ai/rsc";
 import { useState } from "react";
-import { getCoverLetterGeneration } from "~/actions/generate";
-import { sleep } from "~/lib/utils";
+import { toast } from "sonner";
+
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+
+import { handleCoverLetter } from "~/actions/handleCoverLetter";
 
 export function Form({
   setCoverLetter,
 }: {
-  setCoverLetter: (coverLetter: React.ReactNode) => void;
+  setCoverLetter: (coverLetter: string) => void;
 }) {
   const [file, setFile] = useState<File>();
   const [linkedInUrl, setLinkedInUrl] = useState("");
@@ -39,12 +41,25 @@ export function Form({
     formData.append("linkedInUrl", linkedInUrl);
     formData.append("jobPostingUrl:", jobPostingUrl);
 
-    setCoverLetter(await getCoverLetterGeneration(formData));
+    try {
+      setIsPending(true);
+      const res = await handleCoverLetter(formData);
+      if (!res) {
+        toast.error(`Unknown error. Please try again.`);
+        return;
+      }
 
-    // TODO: actual pending
-    setIsPending(true);
-    await sleep(10_000);
-    setIsPending(false);
+      const { object } = res;
+      for await (const partialObject of readStreamableValue(object)) {
+        if (partialObject) {
+          setCoverLetter(partialObject.content);
+        }
+      }
+    } catch (err) {
+      toast.error(`Error generating cover letter: ${err}. Please try again.`);
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (
@@ -79,7 +94,7 @@ export function Form({
       <div>
         <div className="flex justify-end">
           <Button onClick={handleSubmit} type="submit" disabled={isPending}>
-            Generate Cover Letter 🚀
+            {isPending ? "Generating..." : "Generate Cover Letter 🚀"}
           </Button>
         </div>
       </div>

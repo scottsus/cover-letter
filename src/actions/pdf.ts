@@ -1,6 +1,8 @@
+"use server";
+
 import PDFParser from "pdf2json";
 
-export function readPdfText(file: File): Promise<string> {
+export async function readPdfText(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const pdfParser = new PDFParser();
     pdfParser.on("pdfParser_dataError", (err: any) => {
