@@ -17,26 +17,27 @@ You know both the traditional and contemporary ways of writing cover letters tha
 Your tones are witty, intelligent, and extremely engaging.
 Given all this, your job is to write a meaningful and attention-grabbing cover letter.
 Some points to take note of:
-- don't use markdown syntax like ** or _ _
+ 1. don't use markdown syntax like ** or _ _
+ 2. use exactly 2 emojis in the entire cover letter.
 `;
 
 export const coverLetterPrompt = ({
   resume,
-  linkedInProfileContents,
+  linkedInProfile,
   jobDescription,
 }: {
   resume?: string;
-  linkedInProfileContents?: string;
+  linkedInProfile?: string;
   jobDescription: string;
 }) => {
   let content = coverLetterSystemPrompt;
   if (resume) {
-    content += `Also, you are given the following resume: ${resume}`;
+    content += `Also, you are given the following resume: \n"""${resume}\n"""`;
   }
-  if (linkedInProfileContents) {
-    content += `Additionally, you are given the following LinkedIn profile information: ${linkedInProfileContents}`;
+  if (linkedInProfile) {
+    content += `Additionally, you are given the following LinkedIn profile information: \n"""${linkedInProfile}\n"""`;
   }
-  content += `Here is the given job description: ${jobDescription}`;
+  content += `Here is the given job description: \n"""${jobDescription}\n"""`;
 
   return content;
 };

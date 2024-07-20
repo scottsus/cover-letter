@@ -4,15 +4,15 @@ import { generateText, streamObject } from "ai";
 import { createStreamableValue } from "ai/rsc";
 import { z } from "zod";
 
-import { getInnerText } from "~/lib/cheerio";
 import { DEFAULT_MODEL } from "~/lib/models";
 import {
   coverLetterPrompt,
   coverLetterSystemPrompt,
-  htmlPageReconstruction,
   pdfReconstructionSystemPrompt,
 } from "~/lib/prompts";
 
+import { getPageContents } from "./fetchPage";
+import { fetchLinkedInProfile } from "./linkedIn";
 import { readPdfText } from "~/actions/pdf";
 
 export async function handleCoverLetter(formData: FormData) {
@@ -20,35 +20,34 @@ export async function handleCoverLetter(formData: FormData) {
   const linkedInUrl = formData.get("linkedInUrl") as string;
   const jobPostingUrl = formData.get("jobPostingUrl") as string;
 
-  const [reconstructedResume, jobPostingContents] = await Promise.all([
-    (async () => {
-      const fileContents = file
-        ? file.type === "application/pdf"
-          ? await readPdfText(file)
-          : await file?.text()
-        : "";
-      return generateText({
-        model: DEFAULT_MODEL,
-        system: pdfReconstructionSystemPrompt,
-        prompt: fileContents,
-      });
-    })(),
-    (async () => {
-      const jobPostingHtmlSoup = await fetch(jobPostingUrl)
-        .then((res) => res.text())
-        .catch((err) => console.error("handleCoverLetter.jobPosting:", err));
-      const jobPostingDirty = getInnerText(jobPostingHtmlSoup ?? "");
-      return generateText({
-        model: DEFAULT_MODEL,
-        system: htmlPageReconstruction,
-        prompt: jobPostingDirty,
-      });
-    })(),
-  ]);
+  const [reconstructedResume, linkedInProfile, jobPostingContents] =
+    await Promise.all([
+      (async () => {
+        const fileContents = file
+          ? file.type === "application/pdf"
+            ? await readPdfText(file)
+            : await file?.text()
+          : "No resume was provided.";
+        return generateText({
+          model: DEFAULT_MODEL,
+          system: pdfReconstructionSystemPrompt,
+          prompt: fileContents,
+        });
+      })(),
+
+      (async () => {
+        return await fetchLinkedInProfile(linkedInUrl);
+      })(),
+
+      (async () => {
+        return await getPageContents({ url: jobPostingUrl, enrich: true });
+      })(),
+    ]);
 
   const prompt = coverLetterPrompt({
     resume: reconstructedResume.text,
-    jobDescription: jobPostingContents.text,
+    linkedInProfile: linkedInProfile,
+    jobDescription: jobPostingContents,
   });
 
   const schema = z.object({ content: z.string() });
