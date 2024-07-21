@@ -1,5 +1,7 @@
 "use client";
 
+import { useLocalStorage, useLocalStorageFile } from "../hooks/useLocalStorage";
+import useWindowSize from "../hooks/useWindowSize";
 import { readStreamableValue } from "ai/rsc";
 import { useState } from "react";
 import { ClipLoader } from "react-spinners";
@@ -8,6 +10,7 @@ import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import UploadFileInput from "~/components/uploadFileInput";
 
 import { handleCoverLetter } from "~/actions/handleCoverLetter";
 
@@ -16,29 +19,33 @@ export function Form({
 }: {
   setCoverLetter: (coverLetter: string) => void;
 }) {
-  const [file, setFile] = useState<File>();
-  const [linkedInUrl, setLinkedInUrl] = useState("");
-  const [jobPostingUrl, setJobPostingUrl] = useState("");
+  const { isMobile } = useWindowSize();
+  const [resume, setResume] = useLocalStorageFile("resume");
+  const [linkedInUrl, setLinkedInUrl] = useLocalStorage("linkedInUrl", "");
+  const [jobPostingUrl, setJobPostingUrl] = useLocalStorage(
+    "jobPostingUrl",
+    "",
+  );
   const [isPending, setIsPending] = useState(false);
   const [hasGeneratedCoverLetter, setHasGeneratedCoverLetter] = useState(false);
 
-  const handleInputFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputFile = e.target.files?.[0];
-    if (inputFile) {
-      setFile(inputFile);
+  const uploadResume = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const resume = e.target.files?.[0];
+    if (resume) {
+      setResume(resume);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file && !linkedInUrl) {
+    if (!resume && !linkedInUrl) {
       toast.error("Need at least one of resume or LinkedIn URL!");
       return;
     }
 
     const formData = new FormData();
-    if (file) {
-      formData.append("file", file);
+    if (resume) {
+      formData.append("resume", resume);
     }
     formData.append("linkedInUrl", linkedInUrl);
     formData.append("jobPostingUrl", jobPostingUrl);
@@ -66,22 +73,25 @@ export function Form({
   };
 
   return (
-    <div className="space-y-6 rounded-lg p-8 shadow-xl">
+    <div className="w-3/4 space-y-6 rounded-lg p-8 shadow-xl lg:w-full">
       <div>
         <h2 className="mb-4 text-2xl font-bold">About 🫵</h2>
-        <div className="mb-2 grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div>
-            <Label htmlFor="resume">Resume (& OPTIONAL: other materials)</Label>
-            <Input type="file" id="resume" onChange={handleInputFile} />
-          </div>
-          <div>
-            <Label htmlFor="linkedin">OPTIONAL: LinkedIn Profile</Label>
-            <Input
-              type="text"
-              id="linkedin"
-              placeholder="Enter LinkedIn URL"
-              onChange={(e) => setLinkedInUrl(e.target.value)}
-            />
+        <div className="my-2 flex flex-col gap-2 md:gap-3">
+          <div className="flex flex-row gap-x-2 md:gap-x-4">
+            <div className="w-1/2">
+              <Label htmlFor="resume">Resume</Label>
+              <UploadFileInput file={resume} uploadFile={uploadResume} />
+            </div>
+            <div className="w-1/2">
+              <Label htmlFor="linkedin">LinkedIn Profile</Label>
+              <Input
+                type="text"
+                id="linkedin"
+                placeholder={isMobile ? "LinkedIn" : "Enter LinkedIn URL"}
+                value={linkedInUrl}
+                onChange={(e) => setLinkedInUrl(e.target.value)}
+              />
+            </div>
           </div>
           <div className="md:col-span-2">
             <Label htmlFor="job-posting">Job Posting</Label>
@@ -89,6 +99,7 @@ export function Form({
               type="text"
               id="job-posting"
               placeholder="Enter job posting URL"
+              value={jobPostingUrl}
               onChange={(e) => setJobPostingUrl(e.target.value)}
             />
           </div>
@@ -96,14 +107,19 @@ export function Form({
       </div>
       <div>
         <div className="flex justify-end">
-          <Button onClick={handleSubmit} type="submit" disabled={isPending}>
+          <Button
+            className={`${isMobile && "mx-auto"} mt-2`}
+            onClick={handleSubmit}
+            type="submit"
+            disabled={isPending}
+          >
             {isPending ? (
               <>
                 <ClipLoader size={16} color="white" className="mr-2" />
                 Generating...
               </>
             ) : !hasGeneratedCoverLetter ? (
-              "Generate Cover Letter 🚀"
+              "Generate Cover Letter ✨"
             ) : (
               "Regenerate Cover Letter ✨"
             )}

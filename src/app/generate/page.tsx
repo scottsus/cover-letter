@@ -20,8 +20,8 @@ export default function HomePage() {
           Land your dream job interview 👋
         </h1>
         <h2 className="mb-6 text-center text-xl text-muted-foreground">
-          Generate a cover letter, but without the 🐂💩 of sign up and whatever
-          tf clickbait. Shut up and generate one.
+          AI cover letter, but without the 🐂💩 of sign up and whatever tf
+          clickbait. Shut up and generate one.
         </h2>
         <Form setCoverLetter={setCoverLetter} />
       </motion.div>

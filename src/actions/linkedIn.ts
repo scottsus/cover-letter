@@ -17,11 +17,11 @@ export async function fetchLinkedInProfile(linkedInUrl: string) {
   });
 
   if (!response.ok) {
-    throw new Error("Unable to fetch profile.");
+    console.error(`LinkedIn: unable to fetch profile [${linkedInUrl}]`);
+    return "";
   }
 
   const obj = await response.json();
-
   const profile: LinkedInProfile = {
     first_name: obj.first_name,
     last_name: obj.last_name,
@@ -55,7 +55,11 @@ export async function fetchLinkedInProfile(linkedInUrl: string) {
     certifications: obj.certifications.map((cert: any) => cert.name),
   };
 
-  return pretty(profile);
+  const prettified = pretty(profile);
+  if (typeof prettified !== "string") {
+    return "";
+  }
+  return prettified;
 }
 
 interface LinkedInProfile {

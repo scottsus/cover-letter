@@ -1,3 +1,5 @@
+"use client";
+
 import { Document, Page, StyleSheet, Text, pdf } from "@react-pdf/renderer";
 import { CheckIcon, DownloadIcon } from "lucide-react";
 import { useState } from "react";
