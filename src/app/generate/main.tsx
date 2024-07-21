@@ -3,11 +3,11 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 
+import { Editor } from "./editor";
 import { Form } from "./form";
-import { CoverLetter } from "./letter";
 
 export function MainArea({ numHits }: { numHits: number }) {
-  const [coverLetter, setCoverLetter] = useState("");
+  const [content, setContent] = useState("");
 
   return (
     <main className="flex flex-1 flex-col items-center justify-center p-6 lg:flex-row lg:space-x-6">
@@ -23,23 +23,20 @@ export function MainArea({ numHits }: { numHits: number }) {
           AI cover letter, but without the 🐂💩 of sign up and whatever tf
           clickbait. Shut up and generate one.
         </h2>
-        <Form setCoverLetter={setCoverLetter} />
+        <Form setContent={setContent} />
         <p className="md:text-md mt-5 text-center text-sm text-muted-foreground">
           There were {numHits.toLocaleString()} other people who generated a
           cover letter this month.
         </p>
       </motion.div>
-      {coverLetter && (
+      {content && (
         <motion.div
           className="w-full lg:w-1/2"
           initial={{ opacity: 0, x: 100 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <CoverLetter
-            coverLetter={coverLetter}
-            setCoverLetter={setCoverLetter}
-          />
+          <Editor content={content} setContent={setContent} />
         </motion.div>
       )}
     </main>

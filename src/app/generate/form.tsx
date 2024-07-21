@@ -13,14 +13,15 @@ import { Label } from "~/components/ui/label";
 import UploadFileInput from "~/components/uploadFileInput";
 
 import { recordPageGeneration } from "~/actions/analytics";
-import { handleCoverLetter } from "~/actions/handleCoverLetter";
+import { handleGeneration } from "~/actions/handleGeneration";
 
 export function Form({
-  setCoverLetter,
+  setContent,
 }: {
-  setCoverLetter: (coverLetter: string) => void;
+  setContent: (content: string) => void;
 }) {
   const { isMobile, isDesktop } = useWindowSize();
+  const [isModeEmail, setIsModeEmail] = useState(false); // email vs cover letter
   const [resume, setResume] = useLocalStorageFile("resume");
   const [linkedInUrl, setLinkedInUrl] = useLocalStorage("linkedInUrl", "");
   const [jobPostingUrl, setJobPostingUrl] = useLocalStorage(
@@ -28,7 +29,7 @@ export function Form({
     "",
   );
   const [isPending, setIsPending] = useState(false);
-  const [hasGeneratedCoverLetter, setHasGeneratedCoverLetter] = useState(false);
+  const [hasGeneratedContent, setHasGeneratedContent] = useState(false);
 
   const uploadResume = (e: React.ChangeEvent<HTMLInputElement>) => {
     const resume = e.target.files?.[0];
@@ -50,13 +51,14 @@ export function Form({
     }
     formData.append("linkedInUrl", linkedInUrl);
     formData.append("jobPostingUrl", jobPostingUrl);
+    formData.append("isModeEmail", isModeEmail.toString());
 
     try {
       setIsPending(true);
-      setHasGeneratedCoverLetter(true);
+      setHasGeneratedContent(true);
       recordPageGeneration();
 
-      const res = await handleCoverLetter(formData);
+      const res = await handleGeneration({ formData, isModeEmail });
       if (!res) {
         toast.error(`Unknown error. Please try again.`);
         return;
@@ -65,7 +67,7 @@ export function Form({
       const { object } = res;
       for await (const partialObject of readStreamableValue(object)) {
         if (partialObject) {
-          setCoverLetter(partialObject.content);
+          setContent(partialObject.content);
         }
       }
     } catch (err) {
@@ -111,9 +113,27 @@ export function Form({
         </div>
       </div>
       <div>
-        <div className="flex justify-end">
+        <div className="flex flex-col items-center md:flex-row">
+          <div className="rounded flex h-8 items-center justify-center space-x-1 rounded-lg border border-secondary px-1 text-xs">
+            <Button
+              className={`${
+                !isModeEmail ? "bg-primary" : "bg-transparent"
+              } h-6 w-6`}
+              onClick={() => setIsModeEmail(false)}
+            >
+              📜
+            </Button>
+            <Button
+              className={`${
+                isModeEmail ? "bg-primary" : "bg-transparent"
+              } h-6 w-6`}
+              onClick={() => setIsModeEmail(true)}
+            >
+              📤
+            </Button>
+          </div>
           <Button
-            className={`${isMobile && "mx-auto"} mt-2`}
+            className={`${isMobile ? "mx-auto" : "ml-auto mr-0"} mt-2`}
             onClick={handleSubmit}
             type="submit"
             disabled={isPending}
@@ -123,10 +143,10 @@ export function Form({
                 <ClipLoader size={16} color="white" className="mr-2" />
                 Generating...
               </>
-            ) : !hasGeneratedCoverLetter ? (
-              "Generate Cover Letter ✨"
+            ) : !hasGeneratedContent ? (
+              `Generate ${isModeEmail ? "Email" : "Cover Letter"} ✨`
             ) : (
-              "Regenerate Cover Letter ✨"
+              `Regenerate ${isModeEmail ? "Email" : "Cover Letter"} ✨`
             )}
           </Button>
         </div>

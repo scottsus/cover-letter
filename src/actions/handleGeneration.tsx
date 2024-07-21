@@ -8,6 +8,7 @@ import { DEFAULT_MODEL } from "~/lib/models";
 import {
   coverLetterPrompt,
   coverLetterSystemPrompt,
+  emailPrompt,
   pdfReconstructionSystemPrompt,
 } from "~/lib/prompts";
 
@@ -19,7 +20,13 @@ import {
 } from "./linkedIn";
 import { readPdfText } from "~/actions/pdf";
 
-export async function handleCoverLetter(formData: FormData) {
+export async function handleGeneration({
+  formData,
+  isModeEmail,
+}: {
+  formData: FormData;
+  isModeEmail: boolean;
+}) {
   const file = formData.get("resume") as File | null;
   const linkedInUrl = formData.get("linkedInUrl") as string;
   const jobPostingUrl = formData.get("jobPostingUrl") as string;
@@ -51,11 +58,17 @@ export async function handleCoverLetter(formData: FormData) {
     ]);
 
   const resume = reconstructedResume.text;
-  const prompt = coverLetterPrompt({
-    resume,
-    linkedInProfile,
-    jobDescription: jobPostingContents,
-  });
+  const prompt = isModeEmail
+    ? emailPrompt({
+        resume,
+        linkedInProfile,
+        jobDescription: jobPostingContents,
+      })
+    : coverLetterPrompt({
+        resume,
+        linkedInProfile,
+        jobDescription: jobPostingContents,
+      });
   recordGeneration({
     resume,
     linkedInProfile,

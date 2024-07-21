@@ -15,6 +15,13 @@
       "when": 1721527915337,
       "tag": "0001_same_nightmare",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1721542808509,
+      "tag": "0002_nasty_maestro",
+      "breakpoints": true
     }
   ]
 }
