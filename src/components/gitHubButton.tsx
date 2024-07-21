@@ -5,7 +5,7 @@ export function GitHubButton() {
   return (
     <iframe
       src={`https://ghbtns.com/github-btn.html?user=${user}&repo=${repo}&type=star&count=true&size=large&v=2`}
-      width="170"
+      width="120"
       height="30"
       title="GitHub"
     ></iframe>

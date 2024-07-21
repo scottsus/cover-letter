@@ -8,7 +8,7 @@ export default async function HomePage() {
   const numHits = await getPageHits();
 
   return (
-    <div className="flex min-h-screen flex-col px-8 py-4">
+    <div className="flex min-h-screen flex-col px-2 py-4 lg:px-8">
       <Navbar />
       <MainArea numHits={numHits ?? 0} />
       <Footer />

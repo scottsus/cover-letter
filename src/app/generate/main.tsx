@@ -16,15 +16,15 @@ export function MainArea({ numHits }: { numHits: number }) {
         layout
         transition={{ duration: 0.2 }}
       >
-        <h1 className="mb-4 text-center text-4xl font-bold">
+        <h1 className="mb-4 text-center text-2xl font-bold md:text-4xl">
           Land your dream job interview 👋
         </h1>
-        <h2 className="mb-6 text-center text-xl text-muted-foreground">
+        <h2 className="text-md mb-6 text-center text-muted-foreground md:text-xl">
           AI cover letter, but without the 🐂💩 of sign up and whatever tf
           clickbait. Shut up and generate one.
         </h2>
         <Form setCoverLetter={setCoverLetter} />
-        <p className="mt-5 text-center text-muted-foreground">
+        <p className="text-md mt-5 text-center text-muted-foreground">
           There were {numHits.toLocaleString()} other people who generated a
           cover letter this month.
         </p>

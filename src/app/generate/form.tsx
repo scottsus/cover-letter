@@ -20,7 +20,7 @@ export function Form({
 }: {
   setCoverLetter: (coverLetter: string) => void;
 }) {
-  const { isMobile } = useWindowSize();
+  const { isMobile, isDesktop } = useWindowSize();
   const [resume, setResume] = useLocalStorageFile("resume");
   const [linkedInUrl, setLinkedInUrl] = useLocalStorage("linkedInUrl", "");
   const [jobPostingUrl, setJobPostingUrl] = useLocalStorage(
@@ -76,16 +76,18 @@ export function Form({
   };
 
   return (
-    <div className="w-3/4 space-y-6 rounded-lg p-8 shadow-xl lg:w-full">
+    <div className="w-full space-y-6 rounded-lg p-8 shadow-xl sm:w-3/4 lg:w-full">
       <div>
         <h2 className="mb-4 text-2xl font-bold">About 🫵</h2>
         <div className="my-2 flex flex-col gap-2 md:gap-3">
           <div className="flex flex-row gap-x-2 md:gap-x-4">
-            <div className="w-1/2">
-              <Label htmlFor="resume">Resume</Label>
-              <UploadFileInput file={resume} uploadFile={uploadResume} />
-            </div>
-            <div className="w-1/2">
+            {isDesktop && (
+              <div className="w-1/2">
+                <Label htmlFor="resume">Resume</Label>
+                <UploadFileInput file={resume} uploadFile={uploadResume} />
+              </div>
+            )}
+            <div className={`${isDesktop ? "w-1/2" : "w-full"}`}>
               <Label htmlFor="linkedin">LinkedIn Profile</Label>
               <Input
                 type="text"
