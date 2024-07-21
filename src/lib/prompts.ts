@@ -34,6 +34,7 @@ Some points to take note of:
  2. Don't provide any comments, just the cover letter itself.
  3. You are only allowed to use the content you see in the resume and LinkedIn profile, don't make up other experiences.
  4. That said, try to make unique connections of the user's information and the job description, trying your best to not be generic.
+ 5. Pay special attention to names, companies, organizations etc. A specific, unique cover letter is exponentially better than a generic one.
 
 Here's an example of a high quality cover letter:
 """
