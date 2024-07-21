@@ -24,7 +24,7 @@ export function MainArea({ numHits }: { numHits: number }) {
           clickbait. Shut up and generate one.
         </h2>
         <Form setCoverLetter={setCoverLetter} />
-        <p className="text-md mt-5 text-center text-muted-foreground">
+        <p className="md:text-md mt-5 text-center text-sm text-muted-foreground">
           There were {numHits.toLocaleString()} other people who generated a
           cover letter this month.
         </p>

@@ -78,7 +78,7 @@ export function Form({
   return (
     <div className="w-full space-y-6 rounded-lg p-8 shadow-xl sm:w-3/4 lg:w-full">
       <div>
-        <h2 className="mb-4 text-2xl font-bold">About 🫵</h2>
+        <h2 className="mb-4 text-lg font-bold md:text-2xl">About 🫵</h2>
         <div className="my-2 flex flex-col gap-2 md:gap-3">
           <div className="flex flex-row gap-x-2 md:gap-x-4">
             {isDesktop && (
