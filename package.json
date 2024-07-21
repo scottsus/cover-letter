@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "lint": "next lint",
-    "build": "next build",
+    "build": "drizzle-kit generate && drizzle-kit migrate && next build",
     "start": "next start",
     "env:dev": "dotenv -e .env.local",
     "db:push": "yarn env:dev drizzle-kit push",

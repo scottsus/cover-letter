@@ -13,6 +13,7 @@ import {
   pdfReconstructionSystemPrompt,
 } from "~/lib/prompts";
 
+import { recordGeneration } from "./analytics";
 import { getPageContents } from "./fetchPage";
 import { fetchLinkedInProfile } from "./linkedIn";
 import { readPdfText } from "~/actions/pdf";
@@ -46,12 +47,18 @@ export async function handleCoverLetter(formData: FormData) {
       })(),
     ]);
 
+  const resume = reconstructedResume.text;
   const prompt = coverLetterPrompt({
-    resume: reconstructedResume.text,
-    linkedInProfile: linkedInProfile,
+    resume,
+    linkedInProfile,
     jobDescription: jobPostingContents,
   });
-  savePrompt(prompt);
+  recordGeneration({
+    resume,
+    linkedInProfile,
+    jobPosting: jobPostingContents,
+    prompt,
+  });
 
   const schema = z.object({ content: z.string() });
   type T = z.infer<typeof schema>;
@@ -71,12 +78,4 @@ export async function handleCoverLetter(formData: FormData) {
   })();
 
   return { object: stream.value };
-}
-
-async function savePrompt(prompt: string) {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-  const filename = `prompt-${timestamp}.txt`;
-  const filePath = join(process.cwd(), "prompts", filename);
-
-  await writeFile(filePath, prompt);
 }

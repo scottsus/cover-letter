@@ -1,7 +1,7 @@
 "use server";
 
 import { eq } from "drizzle-orm";
-import { analytics } from "drizzle/schemas";
+import { analytics, generations } from "drizzle/schemas";
 
 import { db } from "~/server/db";
 
@@ -60,5 +60,25 @@ export async function recordPageGeneration() {
       .where(eq(analytics.id, theOnlyRecord.id));
   } catch (err) {
     console.error("recordPageGeneration:", err);
+  }
+}
+
+export async function recordGeneration({
+  resume,
+  linkedInProfile,
+  jobPosting,
+  prompt,
+}: {
+  resume: string;
+  linkedInProfile: string;
+  jobPosting: string;
+  prompt: string;
+}) {
+  try {
+    await db
+      .insert(generations)
+      .values({ resume, linkedInProfile, jobPosting, prompt });
+  } catch (err) {
+    console.error("recordGeneration:", err);
   }
 }
