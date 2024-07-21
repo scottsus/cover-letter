@@ -52,6 +52,7 @@ export function useLocalStorageFile(
       if (file) {
         localStorage.setItem(fileNameKey, file.name);
         file.text().then((text) => localStorage.setItem(fileKey, text));
+        setFile(file);
       } else {
         localStorage.removeItem(fileNameKey);
         localStorage.removeItem(fileKey);

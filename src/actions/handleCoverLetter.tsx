@@ -2,6 +2,8 @@
 
 import { generateText, streamObject } from "ai";
 import { createStreamableValue } from "ai/rsc";
+import { writeFile } from "fs/promises";
+import { join } from "path";
 import { z } from "zod";
 
 import { DEFAULT_MODEL } from "~/lib/models";
@@ -16,7 +18,7 @@ import { fetchLinkedInProfile } from "./linkedIn";
 import { readPdfText } from "~/actions/pdf";
 
 export async function handleCoverLetter(formData: FormData) {
-  const file = formData.get("file") as File | undefined;
+  const file = formData.get("resume") as File | null;
   const linkedInUrl = formData.get("linkedInUrl") as string;
   const jobPostingUrl = formData.get("jobPostingUrl") as string;
 
@@ -49,6 +51,7 @@ export async function handleCoverLetter(formData: FormData) {
     linkedInProfile: linkedInProfile,
     jobDescription: jobPostingContents,
   });
+  savePrompt(prompt);
 
   const schema = z.object({ content: z.string() });
   type T = z.infer<typeof schema>;
@@ -68,4 +71,12 @@ export async function handleCoverLetter(formData: FormData) {
   })();
 
   return { object: stream.value };
+}
+
+async function savePrompt(prompt: string) {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const filename = `prompt-${timestamp}.txt`;
+  const filePath = join(process.cwd(), "prompts", filename);
+
+  await writeFile(filePath, prompt);
 }
