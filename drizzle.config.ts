@@ -3,10 +3,11 @@ import { type Config } from "drizzle-kit";
 import { env } from "~/env";
 
 export default {
-  schema: "./src/server/db/schema.ts",
   dialect: "postgresql",
+  out: "./drizzle/migrations",
+  schema: "./drizzle/schemas/**/schema.ts",
   dbCredentials: {
     url: env.DATABASE_URL,
   },
-  tablesFilter: ["covgen_*"],
+  schemaFilter: ["public"],
 } satisfies Config;

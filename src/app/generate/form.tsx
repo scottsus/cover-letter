@@ -12,6 +12,7 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import UploadFileInput from "~/components/uploadFileInput";
 
+import { recordPageGeneration } from "~/actions/analytics";
 import { handleCoverLetter } from "~/actions/handleCoverLetter";
 
 export function Form({
@@ -53,6 +54,8 @@ export function Form({
     try {
       setIsPending(true);
       setHasGeneratedCoverLetter(true);
+      recordPageGeneration();
+
       const res = await handleCoverLetter(formData);
       if (!res) {
         toast.error(`Unknown error. Please try again.`);

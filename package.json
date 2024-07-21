@@ -4,14 +4,17 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "next build",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "build": "next build",
+    "start": "next start",
+    "env:dev": "dotenv -e .env.local",
+    "db:push": "yarn env:dev drizzle-kit push",
+    "db:introspect": "yarn env:dev drizzle-kit introspect",
+    "db:generate": "yarn env:dev drizzle-kit generate",
+    "db:migrate": "yarn env:dev drizzle-kit migrate",
+    "db:drop": "yarn env:dev drizzle-kit drop",
+    "db:studio": "yarn env:dev drizzle-kit studio"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^0.0.30",
