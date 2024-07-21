@@ -36,8 +36,9 @@ yarn-error.log*
 .env
 .env*.local
 
-# prompts
+# Project
 /prompts
+/profiles
 
 # vercel
 .vercel

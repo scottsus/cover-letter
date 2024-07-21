@@ -2,8 +2,6 @@
 
 import { generateText, streamObject } from "ai";
 import { createStreamableValue } from "ai/rsc";
-import { writeFile } from "fs/promises";
-import { join } from "path";
 import { z } from "zod";
 
 import { DEFAULT_MODEL } from "~/lib/models";
@@ -15,7 +13,7 @@ import {
 
 import { recordGeneration } from "./analytics";
 import { getPageContents } from "./fetchPage";
-import { fetchLinkedInProfile } from "./linkedIn";
+import { fetchLinkedInProfileWithCache } from "./linkedIn";
 import { readPdfText } from "~/actions/pdf";
 
 export async function handleCoverLetter(formData: FormData) {
@@ -39,7 +37,7 @@ export async function handleCoverLetter(formData: FormData) {
       })(),
 
       (async () => {
-        return await fetchLinkedInProfile(linkedInUrl);
+        return await fetchLinkedInProfileWithCache(linkedInUrl);
       })(),
 
       (async () => {

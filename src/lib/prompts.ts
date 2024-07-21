@@ -1,3 +1,5 @@
+import { doorDash, elevenLabs, rabbit } from "./templates";
+
 export const pdfReconstructionSystemPrompt = `# PDF Reconstructor
 
 PDF Readers these days suck. They often butcher the contents of the original PDF.
@@ -14,7 +16,7 @@ It's generally difficult to extract meaningful text content from a webpage just 
 However, that is exactly what is being done, and I'm getting a lot of noise, lots of javascript and other DOM objects.
 Your job, as a professional HTML parser, is to extract the most meaningful content from the page. Try your best to do the following:
  1. Try to understand the purpose of the page.
- 2. Extract the most meaningful parts of the page.
+ 2. Extract the most meaningful parts of the page, including names, organizations, companies, and more.
  3. Remove all the nonsense parts of it.
  4. Don't provide any comments, only the content of the page.
  5. Don't make up anything, and try your best to keep the content to that which you see in the page.
@@ -28,11 +30,26 @@ You know both the traditional and contemporary ways of writing cover letters tha
 Your tones are witty, intelligent, and extremely engaging.
 Given all this, your job is to write a meaningful and attention-grabbing cover letter.
 Some points to take note of:
- 1. Don't use markdown syntax like ** or _ _
+ 1. DON'T USE MARKDOWN SYNTAX like ** or _ _
  2. Don't provide any comments, just the cover letter itself.
- 3. Use exactly 2 emojis in the entire cover letter.
- 4. You are only allowed to use the content you see in the resume and LinkedIn profile, don't make up other experiences.
-`;
+ 3. You are only allowed to use the content you see in the resume and LinkedIn profile, don't make up other experiences.
+ 4. That said, try to make unique connections of the user's information and the job description, trying your best to not be generic.
+
+Here's an example of a high quality cover letter:
+"""
+${elevenLabs}
+"""
+
+Here's another example of an amazing and meaningful cover letter:
+"""
+${doorDash}
+"""
+
+Here's a third example of an enriched cover letter:
+"""
+${rabbit}
+"""
+ `;
 
 export const coverLetterPrompt = ({
   resume,
@@ -43,15 +60,16 @@ export const coverLetterPrompt = ({
   linkedInProfile?: string;
   jobDescription: string;
 }) => {
-  let content = coverLetterSystemPrompt + "\n";
+  let content = coverLetterSystemPrompt + "\nIt's time!.";
   if (resume) {
-    content += `Also, you are given the following resume: \n"""${resume}\n"""\n\n`;
+    content += `You are given the following resume: \n"""${resume}\n"""\n\n`;
   }
   if (linkedInProfile) {
-    content += `Additionally, you are given the following LinkedIn profile information: \n"""${linkedInProfile}\n"""\n\n`;
+    content += `You are given the following LinkedIn profile information: \n"""${linkedInProfile}\n"""\n\n`;
   }
   content += `Finally, here is the given job description: \n"""${jobDescription}\n"""`;
 
-  content += `If I do get a first round interview I'm taking you out for dinner 🥘 try your best to make my cover letter shine!`;
+  content += `To the very best of your ability, write a meaningful and unique cover letter guaranteed to give the user a first round interview. Goodluck 🤞`;
+
   return content;
 };

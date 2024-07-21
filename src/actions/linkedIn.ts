@@ -1,6 +1,27 @@
 "use server";
 
+import fs from "fs/promises";
+import path from "path";
+
 import { pretty } from "~/lib/utils";
+
+export async function fetchLinkedInProfileWithCache(linkedInUrl: string) {
+  const profilesDir = path.join(process.cwd(), "profiles");
+  const fileName = `${Buffer.from(linkedInUrl).toString("base64")}.json`;
+  const filePath = path.join(profilesDir, fileName);
+
+  try {
+    const profile = await fs.readFile(filePath, "utf-8");
+
+    return profile;
+  } catch (err) {
+    const newProfile = await fetchLinkedInProfile(linkedInUrl);
+    await fs.mkdir(profilesDir, { recursive: true });
+    await fs.writeFile(filePath, newProfile);
+
+    return newProfile;
+  }
+}
 
 export async function fetchLinkedInProfile(linkedInUrl: string) {
   const apiKey = process.env.PROXYCURL_API_KEY ?? "";
