@@ -1,7 +1,7 @@
 import { readStreamableValue } from "ai/rsc";
 import { useState } from "react";
 import { z } from "zod";
-import { SzObject } from "zodex/dist/types";
+import type { SzObject } from "zodex/dist/types";
 import { zerialize } from "zodex/dist/zerialize";
 
 import { generateObjectStream } from "~/actions/generateObjectStream";

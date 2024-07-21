@@ -9,7 +9,7 @@ export async function getPageContents({
   enrich = false,
 }: {
   url: string;
-  enrich: boolean;
+  enrich?: boolean;
 }) {
   const htmlSoup = await fetch(url)
     .then((res) => res.text())

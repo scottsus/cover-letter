@@ -3,7 +3,7 @@
 import { pretty } from "~/lib/utils";
 
 export async function fetchLinkedInProfile(linkedInUrl: string) {
-  const apiKey = process.env.PROXYCURL_API_KEY || "";
+  const apiKey = process.env.PROXYCURL_API_KEY ?? "";
   const apiUrl = "https://nubela.co/proxycurl/api/v2/linkedin";
 
   const params = new URLSearchParams({

@@ -4,7 +4,7 @@ import { streamObject } from "ai";
 import { createStreamableValue } from "ai/rsc";
 import { z } from "zod";
 import { dezerialize } from "zodex/dist/dezerialize";
-import { SzObject, SzType } from "zodex/dist/types";
+import type { SzObject, SzType } from "zodex/dist/types";
 
 import { DEFAULT_MODEL } from "~/lib/models";
 

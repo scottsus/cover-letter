@@ -6,4 +6,4 @@ export const models = {
   "claude-3-5-sonnet": anthropic("claude-3-5-sonnet-20240620"),
 };
 
-export const DEFAULT_MODEL = models["openai"];
+export const DEFAULT_MODEL = models.openai;
