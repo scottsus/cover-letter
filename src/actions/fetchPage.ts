@@ -18,6 +18,7 @@ export async function getPageContents({
   if (!enrich) {
     return text;
   }
+  console.log("Text:", text);
 
   const jobPostingContents = await generateText({
     model: DEFAULT_MODEL,

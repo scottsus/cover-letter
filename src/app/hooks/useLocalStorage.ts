@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import pdfToText from "react-pdftotext";
 import { toast } from "sonner";
 
 export function useLocalStorage<T>(
@@ -33,32 +34,46 @@ export function useLocalStorage<T>(
 export function useLocalStorageFile(
   fileKey: string,
 ): [File | null, (file: File | null) => void] {
-  const fileNameKey = "resume_file_name";
+  const fileNameKey = `${fileKey}_name`;
+
   const [file, setFile] = useState<File | null>(() => {
-    if (typeof window === "undefined") {
+    if (typeof window === "undefined") return null;
+
+    try {
+      const fileName = localStorage.getItem(fileNameKey);
+      const savedFileContents = localStorage.getItem(fileKey);
+      return fileName && savedFileContents
+        ? new File([savedFileContents], fileName)
+        : null;
+    } catch (error) {
+      console.error("Error reading file from localStorage:", error);
       return null;
     }
-    const fileName = localStorage.getItem(fileNameKey) as string;
-    const savedFileContents = localStorage.getItem(fileKey);
-    const file = savedFileContents
-      ? new File([savedFileContents], fileName)
-      : null;
-
-    return file;
   });
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      if (file) {
-        localStorage.setItem(fileNameKey, file.name);
-        file.text().then((text) => localStorage.setItem(fileKey, text));
-        setFile(file);
-      } else {
-        localStorage.removeItem(fileNameKey);
-        localStorage.removeItem(fileKey);
+    if (typeof window === "undefined") return;
+
+    const updateStorage = async () => {
+      try {
+        if (file) {
+          localStorage.setItem(fileNameKey, file.name);
+          let fileContents =
+            file.type === "application/pdf"
+              ? await pdfToText(file)
+              : await file.text();
+          localStorage.setItem(fileKey, fileContents);
+        } else {
+          localStorage.removeItem(fileNameKey);
+          localStorage.removeItem(fileKey);
+        }
+      } catch (error) {
+        console.error("Error updating localStorage:", error);
       }
-    }
-  }, [file, fileKey]);
+    };
+
+    updateStorage();
+  }, [file, fileKey, fileNameKey]);
 
   return [file, setFile];
 }

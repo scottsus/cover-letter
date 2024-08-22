@@ -34,11 +34,15 @@ export async function handleGeneration({
   const [reconstructedResume, linkedInProfile, jobPostingContents] =
     await Promise.all([
       (async () => {
-        const fileContents = file
+        let fileContents = file
           ? file.type === "application/pdf"
             ? await readPdfText(file)
             : await file?.text()
           : "No resume was provided.";
+
+        const RESUME_MAX_LEN = 20_000;
+        fileContents = fileContents.slice(0, RESUME_MAX_LEN);
+
         return generateText({
           model: DEFAULT_MODEL,
           system: pdfReconstructionSystemPrompt,
