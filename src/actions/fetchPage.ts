@@ -1,17 +1,12 @@
-import { generateText } from "ai";
+import { generateObject, generateText } from "ai";
 import { chromium } from "playwright";
+import { z } from "zod";
 
 import { getInnerText } from "~/lib/cheerio";
 import { DEFAULT_MODEL } from "~/lib/models";
 import { htmlPageReconstruction } from "~/lib/prompts";
 
-export async function getPageContents({
-  url,
-  enrich = false,
-}: {
-  url: string;
-  enrich?: boolean;
-}) {
+export async function getPageContents({ url }: { url: string }) {
   let pageContents = "";
   if (process.env.NODE_ENV === "development") {
     /**
@@ -38,16 +33,15 @@ export async function getPageContents({
     pageContents = getInnerText(htmlSoup ?? "");
   }
 
-  console.log("PageContents:", pageContents);
-  if (!enrich) {
-    return pageContents;
-  }
-
-  const jobPostingContents = await generateText({
+  const jobPostingContents = await generateObject({
     model: DEFAULT_MODEL,
     system: htmlPageReconstruction,
     prompt: pageContents,
+    schema: z.object({
+      text: z.string(),
+      ok: z.boolean(),
+    }),
   });
 
-  return jobPostingContents.text;
+  return jobPostingContents;
 }

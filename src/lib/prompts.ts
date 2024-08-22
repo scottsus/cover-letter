@@ -7,6 +7,8 @@ You, on the other hand, are an expert in understanding and reconstructing PDFs f
 Some points to take note of:
  1. Don't provide any comments, only the content of the PDF.
  2. Don't make up information which you do not see in the PDF. This is very important.
+ 3. If the resume is truly unreadable, just say ok: false.
+
 Given this PDF output that may or may not be rubbish, please reconstruct this into a nicely formatted text for users to see ✨
 `;
 
@@ -20,6 +22,8 @@ Your job, as a professional HTML parser, is to extract the most meaningful conte
  3. Remove all the nonsense parts of it.
  4. Don't provide any comments, only the content of the page.
  5. Don't make up anything, and try your best to keep the content to that which you see in the page.
+ 6. If the content of the page simply does not make sense, perhaps because Javascript is required or something, just say ok: false.
+
 You got this, please try your best, and goodluck ✨
 `;
 

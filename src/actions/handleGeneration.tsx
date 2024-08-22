@@ -1,6 +1,6 @@
 "use server";
 
-import { generateText, streamObject } from "ai";
+import { generateObject, streamObject } from "ai";
 import { createStreamableValue } from "ai/rsc";
 import { z } from "zod";
 
@@ -31,50 +31,64 @@ export async function handleGeneration({
   const linkedInUrl = formData.get("linkedInUrl") as string;
   const jobPostingUrl = formData.get("jobPostingUrl") as string;
 
-  const [reconstructedResume, linkedInProfile, jobPostingContents] =
-    await Promise.all([
-      (async () => {
-        let fileContents = file
-          ? file.type === "application/pdf"
-            ? await readPdfText(file)
-            : await file?.text()
-          : "No resume was provided.";
+  const [resume, linkedInProfile, jobPosting] = await Promise.all([
+    (async () => {
+      let fileContents = file
+        ? file.type === "application/pdf"
+          ? await readPdfText(file)
+          : await file?.text()
+        : "No resume was provided.";
 
-        const RESUME_MAX_LEN = 20_000;
-        fileContents = fileContents.slice(0, RESUME_MAX_LEN);
+      const RESUME_MAX_LEN = 20_000;
+      fileContents = fileContents.slice(0, RESUME_MAX_LEN);
 
-        return generateText({
-          model: DEFAULT_MODEL,
-          system: pdfReconstructionSystemPrompt,
-          prompt: fileContents,
-        });
-      })(),
+      return generateObject({
+        model: DEFAULT_MODEL,
+        system: pdfReconstructionSystemPrompt,
+        prompt: fileContents,
+        schema: z.object({
+          text: z.string(),
+          ok: z.boolean(),
+        }),
+      });
+    })(),
 
-      (async () => {
-        return process.env.NODE_ENV === "development"
-          ? await fetchLinkedInProfileWithCache(linkedInUrl)
-          : await fetchLinkedInProfile(linkedInUrl);
-      })(),
+    (async () => {
+      return process.env.NODE_ENV === "development"
+        ? await fetchLinkedInProfileWithCache(linkedInUrl)
+        : await fetchLinkedInProfile(linkedInUrl);
+    })(),
 
-      (async () => {
-        return await getPageContents({ url: jobPostingUrl, enrich: true });
-      })(),
-    ]);
+    (async () => {
+      return await getPageContents({ url: jobPostingUrl });
+    })(),
+  ]);
 
-  const resume = reconstructedResume.text;
+  if (!resume.object.ok) {
+    return { error: "Unable to read resume. Please upload a different one." };
+  }
+  if (!jobPosting.object.ok) {
+    return {
+      error:
+        "Unable to access job posting. Please try again with a different link.",
+    };
+  }
+
+  const resumeContents = resume.object.text;
+  const jobPostingContents = jobPosting.object.text;
   const prompt = isModeEmail
     ? emailPrompt({
-        resume,
+        resume: resumeContents,
         linkedInProfile,
         jobDescription: jobPostingContents,
       })
     : coverLetterPrompt({
-        resume,
+        resume: resumeContents,
         linkedInProfile,
         jobDescription: jobPostingContents,
       });
   recordGeneration({
-    resume,
+    resume: resumeContents,
     linkedInProfile,
     jobPosting: jobPostingContents,
     prompt,
@@ -97,5 +111,5 @@ export async function handleGeneration({
     stream.done();
   })();
 
-  return { object: stream.value };
+  return { error: null, object: stream.value };
 }

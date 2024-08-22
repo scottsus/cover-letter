@@ -59,8 +59,12 @@ export function Form({
       recordPageGeneration();
 
       const res = await handleGeneration({ formData, isModeEmail });
-      if (!res) {
-        toast.error(`Unknown error. Please try again.`);
+      if (res.error) {
+        toast.error(`Error: ${res.error}`);
+        return;
+      }
+      if (!res.object) {
+        toast.error("Unknown error. Please try again.");
         return;
       }
 
