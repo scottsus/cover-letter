@@ -17,8 +17,8 @@ export async function getPageContents({ url }: { url: string }) {
     await page.goto(url);
 
     await page.waitForLoadState("networkidle");
-
     const content = await page.content();
+
     await browser.close();
 
     pageContents = getInnerText(content);
