@@ -5,7 +5,6 @@ import { MainArea } from "./main";
 import { getPageHits } from "~/actions/analytics";
 
 export const maxDuration = 40;
-export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const numHits = await getPageHits();
