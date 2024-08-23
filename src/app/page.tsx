@@ -4,7 +4,7 @@ import { recordPageHit } from "~/actions/analytics";
 
 export const dynamic = "force-dynamic";
 
-export default function HomePage() {
-  recordPageHit();
+export default async function HomePage() {
+  await recordPageHit();
   redirect("/generate");
 }
