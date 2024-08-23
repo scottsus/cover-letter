@@ -58,7 +58,7 @@ export function useLocalStorageFile(
       try {
         if (file) {
           localStorage.setItem(fileNameKey, file.name);
-          let fileContents =
+          const fileContents =
             file.type === "application/pdf"
               ? await pdfToText(file)
               : await file.text();

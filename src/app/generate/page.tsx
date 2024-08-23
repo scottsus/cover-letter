@@ -4,6 +4,8 @@ import { Navbar } from "~/components/navbar";
 import { MainArea } from "./main";
 import { getPageHits } from "~/actions/analytics";
 
+export const dynamic = "force-dynamic";
+
 export const maxDuration = 40;
 
 export default async function HomePage() {
