@@ -2,6 +2,7 @@
 
 import { eq } from "drizzle-orm";
 import { analytics, generations } from "drizzle/schemas";
+import { revalidatePath } from "next/cache";
 
 import { db } from "~/server/db";
 
@@ -29,6 +30,8 @@ export async function recordPageHit() {
       .update(analytics)
       .set({ numHits: theOnlyRecord.numHits! + 1 })
       .where(eq(analytics.id, theOnlyRecord.id));
+
+    revalidatePath("/generate");
   } catch (err) {
     console.error("recordPageHits:", err);
   }
@@ -58,6 +61,8 @@ export async function recordPageGeneration() {
       .update(analytics)
       .set({ numGenerations: theOnlyRecord.numGenerations! + 1 })
       .where(eq(analytics.id, theOnlyRecord.id));
+
+    revalidatePath("/generate");
   } catch (err) {
     console.error("recordPageGeneration:", err);
   }
