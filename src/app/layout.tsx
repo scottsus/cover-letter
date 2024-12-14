@@ -5,13 +5,12 @@ import { Toaster } from "sonner";
 import "~/styles/globals.css";
 
 export const metadata: Metadata = {
-  title: "No clickbait AI cover letter",
-  description:
-    "AI cover letter, but without the 🐂💩 of sign up and whatever tf clickbait.",
+  title: "Poetry",
+  description: "AI cover letters tailor made to your specifications.",
   icons: [
     {
       rel: "icon",
-      url: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>",
+      url: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>",
     },
   ],
 };

@@ -20,8 +20,7 @@ export function MainArea({ numHits }: { numHits: number }) {
           Land your dream job interview 👋
         </h1>
         <h2 className="text-md mb-6 text-center text-muted-foreground md:text-xl">
-          AI cover letter, but without the 🐂💩 of sign up and whatever tf
-          clickbait. Shut up and generate one.
+          Have AI generate cover letters that sound just like you.
         </h2>
         <Form setContent={setContent} />
         <p className="md:text-md mt-5 text-center text-sm text-muted-foreground">

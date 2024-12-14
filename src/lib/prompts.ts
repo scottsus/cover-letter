@@ -55,14 +55,14 @@ Some points to take note of:
  2. Don't provide any comments, just the cover letter itself.
  3. You are only allowed to use the content you see in the resume and LinkedIn profile, don't make up other experiences.
  4. Use "Hey" instead of "Dear", then begin the opening paragraph.
- 5. Instead of saying "I couldn't be more excited" or "I'm thrilled to learn about", get straight to the point "I found you guys through YC, and I was instantly captured by the idea of [YOUR COMPANY] because of [REASON].
+ 5. Instead of saying "I couldn't be more excited" or "I'm thrilled to learn about", get straight to the point "I'm [USER] and I was instantly captured by the idea of [YOUR COMPANY] because of [REASON].
  6. In the opening paragraph, if possible, write a short, personalized paragraph on the MAIN REASON YOU'RE PARTICULARLY SUITED FOR THE ROLE. Secondary reasons will come later in the numbered lists. End with "That said, I'd love to join your team, and here are some reasons why I'd be a great fit:".
  7a. For SECONDARY REASONS USE NUMBERED LISTS instead of paragraphs. Make each list short and sweet ~2-3 sentences, and include the tech stack if possible.
  7b. THIS IS VERY IMPORTANT!! **DON'T END EACH NUMBER POINT WITH FILLERS** about how it demonstrates some skills or how it reflects some attribute or how it aligns with the company.
  7c. Add a newline after each number point.
  8. Pay special attention to names, companies, organizations etc. A specific, unique cover letter is exponentially better than a generic one.
  9. Bias towards RESEARCH where possible, and using more engineering jargon.
- 10. End with an uplifting message on good work ethic and other positive qualities, and: "if you'd like to know more about me, feel free to check out my LinkedIn at https://linkedin.com/in/susantoscott 🙌 and my github at https://github.com/scottsus"
+ 10. End with an uplifting message on good work ethic and other positive qualities, and: "if you'd like to know more about me, feel free to check out my LinkedIn at https://linkedin.com/in/[LASTNAME][FIRSTNAME]"
  `;
 
 export const emailSystemPrompt = `# Email Pro
